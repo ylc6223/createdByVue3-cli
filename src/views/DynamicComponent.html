@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>动态组件</title>
+    <style>
+      .demo {
+        font-family: sans-serif;
+        border: 1px solid #eee;
+        border-radius: 2px;
+        padding: 20px 30px;
+        margin-top: 1em;
+        margin-bottom: 40px;
+        user-select: none;
+        overflow-x: auto;
+      }
+
+      .tab-button {
+        padding: 6px 10px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        background: #34495e;
+        margin-bottom: -1px;
+        margin-right: -1px;
+        color: #fff;
+      }
+
+      .tab-button:hover {
+        background: #34495e;
+      }
+
+      .tab-button.active {
+        background: #3498db;
+      }
+
+      .demo-tab {
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="dynamic-component-demo" class="demo">
+        <button
+          v-for="tab in tabs"
+          v-bind:key="tab"
+          v-bind:class="['tab-button', { active: curTab === tab }]"
+          v-on:click="curTab = tab"
+        >
+          {{ tab }}
+        </button>
+
+        <component v-bind:is="curComponent" class="tab"></component>
+      </div>
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            curTab: "Home",
+            tabs: ["Home", "Posts", "Archive"],
+          };
+        },
+        computed: {
+          curComponent() {
+            return "tab-" + this.curTab.toLowerCase();
+          },
+        },
+      });
+      app.component("tab-home", {
+        template: `<div class="demo-tab">Home component</div>`,
+      });
+      app.component("tab-posts", {
+        template: `<div class="demo-tab">Posts component</div>`,
+      });
+      app.component("tab-archive", {
+        template: `<div class="demo-tab">Archive component</div>`,
+      });
+
+      app.mount("#app");
+    </script>
+  </body>
+</html>
